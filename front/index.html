@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Enviar Mensagem</title>
+  </head>
+  <body>
+    <div>
+      <h1>Enviar e-mail agendado</h1>
+      <form id="emailForm">
+        <div>
+          <label for="email">Email</label>
+          <input type="text" name="email" id="email" />
+        </div>
+        <div>
+          <label for="title">Titulo</label>
+          <input type="text" name="title" id="title" />
+        </div>
+        <div>
+          <label for="message">Mensagem</label>
+          <input type="text" name="message" id="message" />
+        </div>
+        <div>
+          <label for="date">Data</label>
+          <input type="datetime-local" name="date" id="date" />
+        </div>
+        <button type="submit">Enviar</button>
+      </form>
+    </div>
+
+    <script>
+      document
+        .getElementById('emailForm')
+        .addEventListener('submit', function (e) {
+          e.preventDefault(); // Evita que o formulário seja enviado da maneira tradicional
+
+          // Obtém os valores dos campos do formulário
+          const email = document.getElementById('email').value;
+          const title = document.getElementById('title').value;
+          const message = document.getElementById('message').value;
+          const date = document.getElementById('date').value;
+
+          // Cria um objeto com os dados do formulário
+          const formData = {
+            email: email,
+            title: title,
+            message: message,
+            date: date
+          };
+
+          // Envia os dados para a API usando fetch
+          fetch('http://168.75.92.64:5050/receive', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+          })
+            .then((response) => {
+              if (!response.ok) {
+                return response.json().then((errorData) => {
+                  throw new Error('Erro desconhecido');
+                });
+              }
+              return response.json();
+            })
+            .then((data) => {
+              console.log(data);
+              alert('Mensagem enviada com sucesso!');
+            })
+            .catch((error) => {
+              console.error(error);
+              alert(`Erro: ${error.message}`);
+            });
+        });
+    </script>
+  </body>
+</html>
